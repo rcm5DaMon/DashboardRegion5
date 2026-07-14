@@ -2,168 +2,723 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
   <title>Power BI Portal</title>
+
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-    body, html { height: 100%; width: 100%; background-color: #f4f6f8; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
 
-    /* Login Form Styling */
-    .login-container { display: flex; justify-content: center; align-items: center; height: 100vh; }
-    .card { background: white; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-    .card h2 { margin-bottom: 20px; color: #333; }
-    .card input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
-    .card button { width: 100%; padding: 12px; background-color: #0078d4; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px; }
-    .card button:disabled { background-color: #a6a6a6; }
-    .error { color: #d93025; font-size: 14px; margin-bottom: 15px; display: none; }
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      background-color: #f4f6f8;
+    }
 
-    /* Dashboard View Styling */
-    #dashboard-view { display: none; height: 100vh; flex-direction: column; }
-    header { background: #0078d4; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
-    header h3 { font-size: 18px; font-weight: 600; }
-    header button { padding: 6px 14px; background: white; color: #0078d4; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
-    iframe { width: 100%; height: calc(100vh - 60px); border: none; }
+    /* Login page */
+    .login-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 400px;
+      padding: 40px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    .login-card h2 {
+      margin-bottom: 10px;
+      color: #333333;
+      font-size: 24px;
+    }
+
+    .login-description {
+      margin-bottom: 22px;
+      color: #666666;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .login-card input {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 15px;
+      border: 1px solid #cccccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .login-card input:focus {
+      border-color: #0078d4;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.15);
+    }
+
+    .login-card input:disabled {
+      background-color: #eeeeee;
+      cursor: not-allowed;
+    }
+
+    .login-card button {
+      width: 100%;
+      padding: 13px;
+      color: #ffffff;
+      background-color: #0078d4;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .login-card button:hover:not(:disabled) {
+      background-color: #106ebe;
+    }
+
+    .login-card button:disabled {
+      background-color: #a6a6a6;
+      cursor: not-allowed;
+    }
+
+    .error-message {
+      display: none;
+      padding: 11px;
+      margin-bottom: 15px;
+      color: #b42318;
+      background-color: #fef3f2;
+      border: 1px solid #fecdca;
+      border-radius: 5px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    /* Dashboard page */
+    #dashboard-view {
+      display: none;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    .dashboard-header {
+      min-height: 60px;
+      padding: 14px 20px;
+      color: #ffffff;
+      background-color: #0078d4;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .dashboard-header h3 {
+      overflow: hidden;
+      font-size: 18px;
+      font-weight: 600;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .dashboard-header button {
+      flex-shrink: 0;
+      padding: 8px 16px;
+      color: #0078d4;
+      background-color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .dashboard-header button:hover {
+      background-color: #f2f2f2;
+    }
+
+    #powerbi-frame {
+      width: 100%;
+      height: calc(100vh - 60px);
+      border: none;
+      background-color: #ffffff;
+    }
+
+    @media (max-width: 500px) {
+      .login-card {
+        padding: 28px 22px;
+      }
+
+      .dashboard-header h3 {
+        font-size: 15px;
+      }
+
+      .dashboard-header button {
+        padding: 7px 12px;
+      }
+    }
   </style>
 </head>
+
 <body>
 
+  <!-- Login view -->
   <div id="login-view" class="login-container">
-    <div class="card">
+    <div class="login-card">
       <h2>Portal Access</h2>
-      <div id="error-msg" class="error"></div>
-      <input type="email" id="email-input" placeholder="Enter your email" required />
-      <button id="login-btn" onclick="handleLogin()">Login</button>
+
+      <p class="login-description">
+        Enter your registered email address to access the Power BI dashboard.
+      </p>
+
+      <div
+        id="error-message"
+        class="error-message"
+      ></div>
+
+      <form id="login-form">
+        <input
+          type="email"
+          id="email-input"
+          placeholder="Enter your email address"
+          autocomplete="email"
+          required
+        >
+
+        <button
+          type="submit"
+          id="login-button"
+        >
+          Login
+        </button>
+      </form>
     </div>
   </div>
 
+  <!-- Dashboard view -->
   <div id="dashboard-view">
-    <header>
-      <h3 id="welcome-msg">Welcome</h3>
-      <button onclick="logout()">Logout</button>
+    <header class="dashboard-header">
+      <h3 id="welcome-message">
+        Welcome
+      </h3>
+
+      <button
+        type="button"
+        id="logout-button"
+      >
+        Logout
+      </button>
     </header>
-    <iframe id="powerbi-frame" src=""></iframe>
+
+    <iframe
+      id="powerbi-frame"
+      src=""
+      title="Power BI Dashboard"
+      allowfullscreen
+    ></iframe>
   </div>
 
   <script>
-    // --- ENDPOINT CONFIGURATIONS ---
-    // 1. SheetDB API for User Whitelist Sheet (Column A: name, Column B: user_name)
-    const USERS_API_URL = "https://sheetdb.io/api/v1/2f82rdd589rj5";
+    /*
+    ============================================================
+    CONFIGURATION
+    ============================================================
+    */
 
-    // 2. SheetDB API for Recording Login Logs (Column A: email, Column B: timestamp)
-    const LOGS_API_URL = "https://sheetdb.io/api/v1/baynyn8i2eka0";
+    // Google Sheet containing the login whitelist.
+    const GOOGLE_SHEET_ID =
+      "1TcVbH-ccKUS1AC-oHEIqCAj4IAyS2DmQgywFMqD85HQ";
 
-    // 3. Target Power BI Public URL
-    const POWER_BI_URL = "https://app.powerbi.com/view?r=eyJrIjoiZTlkNWVjNTctOGY1Yy00NTFhLWEzYjktOGYwNGRhZGM3ZmI5IiwidCI6IjU3OGRiYWRkLWMzMmMtNGY1YS04YzQ0LTMzZGE0NGM3MTIwOSIsImMiOjEwfQ%3D%3D";
+    // Exact worksheet tab name.
+    const GOOGLE_SHEET_NAME =
+      "Users";
 
-    const INACTIVITY_LIMIT_MS = 15 * 60 * 1000; // 15 minutes
-    let inactivityTimer;
+    // Google Form used for the login record.
+    const LOGIN_FORM_ID =
+      "1FAIpQLSc8a96-q6g-pNqEXIBmLK7qrxHe5OSKCRkS3w8GHlqs1flTPQ";
 
-    async function handleLogin() {
-      const inputEmail = document.getElementById('email-input').value.trim().toLowerCase();
-      const errorDiv = document.getElementById('error-msg');
-      const loginBtn = document.getElementById('login-btn');
+    // Entry ID of the Email question.
+    const LOGIN_EMAIL_ENTRY_ID =
+      "entry.804019142";
+
+    // Google Form submission endpoint.
+    const LOGIN_FORM_URL =
+      "https://docs.google.com/forms/d/e/" +
+      LOGIN_FORM_ID +
+      "/formResponse";
+
+    // Power BI public report.
+    const POWER_BI_URL =
+      "https://app.powerbi.com/view?r=eyJrIjoiZTlkNWVjNTctOGY1Yy00NTFhLWEzYjktOGYwNGRhZGM3ZmI5IiwidCI6IjU3OGRiYWRkLWMzMmMtNGY1YS04YzQ0LTMzZGE0NGM3MTIwOSIsImMiOjEwfQ%3D%3D";
+
+    // Automatically log out after 15 minutes.
+    const INACTIVITY_LIMIT_MS =
+      15 * 60 * 1000;
+
+    /*
+    ============================================================
+    APPLICATION STATE
+    ============================================================
+    */
+
+    let inactivityTimer = null;
+    let isLoggedIn = false;
+    let activityListenersAttached = false;
+
+    /*
+    ============================================================
+    PAGE ELEMENTS
+    ============================================================
+    */
+
+    const loginView =
+      document.getElementById("login-view");
+
+    const dashboardView =
+      document.getElementById("dashboard-view");
+
+    const loginForm =
+      document.getElementById("login-form");
+
+    const emailInput =
+      document.getElementById("email-input");
+
+    const loginButton =
+      document.getElementById("login-button");
+
+    const logoutButton =
+      document.getElementById("logout-button");
+
+    const errorMessage =
+      document.getElementById("error-message");
+
+    const welcomeMessage =
+      document.getElementById("welcome-message");
+
+    const powerBIFrame =
+      document.getElementById("powerbi-frame");
+
+    /*
+    ============================================================
+    READ WHITELIST FROM GOOGLE SHEETS
+    ============================================================
+
+    Required Google Sheet structure:
+
+    Column A: email
+    Column B: user_name
+
+    First row:
+    email | user_name
+    */
+
+    function getUsersFromGoogleSheet() {
+      return new Promise((resolve, reject) => {
+        const callbackName =
+          "googleSheetCallback_" +
+          Date.now() +
+          "_" +
+          Math.floor(Math.random() * 100000);
+
+        const script =
+          document.createElement("script");
+
+        const query =
+          "select A, B where A is not null";
+
+        const requestTimeout =
+          setTimeout(() => {
+            cleanup();
+
+            reject(
+              new Error(
+                "The Google Sheet request timed out."
+              )
+            );
+          }, 15000);
+
+        function cleanup() {
+          clearTimeout(requestTimeout);
+
+          if (script.parentNode) {
+            script.parentNode.removeChild(script);
+          }
+
+          try {
+            delete window[callbackName];
+          } catch (error) {
+            window[callbackName] = undefined;
+          }
+        }
+
+        window[callbackName] = function (response) {
+          try {
+            if (!response) {
+              throw new Error(
+                "Google Sheets returned an empty response."
+              );
+            }
+
+            if (response.status === "error") {
+              const details =
+                response.errors?.[0]?.detailed_message ||
+                response.errors?.[0]?.message ||
+                "Unknown Google Sheets error.";
+
+              throw new Error(details);
+            }
+
+            const rows =
+              response.table?.rows || [];
+
+            const users = rows
+              .map((row) => {
+                const emailValue =
+                  row.c?.[0]?.v;
+
+                const userNameValue =
+                  row.c?.[1]?.v;
+
+                return {
+                  email: emailValue
+                    ? String(emailValue)
+                        .trim()
+                        .toLowerCase()
+                    : "",
+
+                  userName: userNameValue
+                    ? String(userNameValue).trim()
+                    : "User"
+                };
+              })
+              .filter((user) => {
+                return user.email !== "";
+              });
+
+            cleanup();
+            resolve(users);
+          } catch (error) {
+            cleanup();
+            reject(error);
+          }
+        };
+
+        script.onerror = function () {
+          cleanup();
+
+          reject(
+            new Error(
+              "Unable to load the Google Sheet."
+            )
+          );
+        };
+
+        const sheetURL =
+          "https://docs.google.com/spreadsheets/d/" +
+          encodeURIComponent(GOOGLE_SHEET_ID) +
+          "/gviz/tq" +
+          "?sheet=" +
+          encodeURIComponent(GOOGLE_SHEET_NAME) +
+          "&headers=1" +
+          "&tq=" +
+          encodeURIComponent(query) +
+          "&tqx=" +
+          encodeURIComponent(
+            "out:json;responseHandler:" +
+            callbackName
+          ) +
+          "&cacheBust=" +
+          Date.now();
+
+        script.src = sheetURL;
+        script.async = true;
+
+        document.body.appendChild(script);
+      });
+    }
+
+    /*
+    ============================================================
+    RECORD SUCCESSFUL LOGIN
+    ============================================================
+
+    Only the verified email is submitted.
+    Google Forms automatically creates the timestamp.
+    */
+
+    function recordLogin(email) {
+      const formData =
+        new URLSearchParams();
+
+      formData.append(
+        LOGIN_EMAIL_ENTRY_ID,
+        email
+      );
+
+      fetch(LOGIN_FORM_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type":
+            "application/x-www-form-urlencoded"
+        },
+        body: formData.toString(),
+        keepalive: true
+      }).catch((error) => {
+        console.error(
+          "Unable to record login:",
+          error
+        );
+      });
+    }
+
+    /*
+    ============================================================
+    LOGIN
+    ============================================================
+    */
+
+    async function handleLogin(event) {
+      event.preventDefault();
+
+      hideError();
+
+      const inputEmail =
+        emailInput.value
+          .trim()
+          .toLowerCase();
 
       if (!inputEmail) {
-        showError("Please enter a valid email address.");
+        showError(
+          "Please enter your email address."
+        );
+
+        emailInput.focus();
         return;
       }
 
-      loginBtn.disabled = true;
-      loginBtn.innerText = "Verifying...";
-      errorDiv.style.display = "none";
+      if (!emailInput.checkValidity()) {
+        showError(
+          "Please enter a valid email address."
+        );
+
+        emailInput.focus();
+        return;
+      }
+
+      setLoginLoading(true);
 
       try {
-        // Fetch user data directly from SheetDB
-        const response = await fetch(USERS_API_URL);
-        const users = await response.json();
+        const users =
+          await getUsersFromGoogleSheet();
 
-        // Search for matching email in the 'name' column
-        const foundUser = users.find(u => u.name && u.name.trim().toLowerCase() === inputEmail);
+        const foundUser =
+          users.find((user) => {
+            return user.email === inputEmail;
+          });
 
-        if (foundUser) {
-          const userName = foundUser.user_name || "User";
+        if (!foundUser) {
+          showError(
+            "Access denied. This email address is not registered."
+          );
 
-          // Record login log via SheetDB POST
-          recordLoginLog(inputEmail);
-
-          // Update UI & load Power BI dashboard
-          document.getElementById('welcome-msg').innerText = `Welcome, ${userName}!`;
-          document.getElementById('powerbi-frame').src = POWER_BI_URL;
-          
-          document.getElementById('login-view').style.display = 'none';
-          document.getElementById('dashboard-view').style.display = 'flex';
-
-          // Start 15-minute inactivity tracker
-          startInactivityTracker();
-        } else {
-          showError("Access Denied: Email not listed.");
+          return;
         }
-      } catch (err) {
-        showError("Unable to verify credentials. Please try again later.");
+
+        // Record only the verified email address.
+        recordLogin(foundUser.email);
+
+        // Open the dashboard.
+        openDashboard(foundUser);
+      } catch (error) {
+        console.error(
+          "Login verification error:",
+          error
+        );
+
+        showError(
+          "Unable to verify your email. Check the Google Sheet sharing, publishing settings, and tab name."
+        );
       } finally {
-        loginBtn.disabled = false;
-        loginBtn.innerText = "Login";
+        setLoginLoading(false);
       }
     }
 
-    // Append new log row to the record sheet with an unambiguous timestamp (YYYY-MM-DD HH:mm:ss)
-    function recordLoginLog(email) {
-      const now = new Date();
+    /*
+    ============================================================
+    OPEN DASHBOARD
+    ============================================================
+    */
 
-      const year = now.getFullYear();
-      const month = String(now.getMonth() + 1).padStart(2, '0');
-      const day = String(now.getDate()).padStart(2, '0');
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const seconds = String(now.getSeconds()).padStart(2, '0');
+    function openDashboard(user) {
+      isLoggedIn = true;
 
-      const formattedTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+      welcomeMessage.textContent =
+        "Welcome, " +
+        (user.userName || "User") +
+        "!";
 
-      fetch(LOGS_API_URL, {
-        method: "POST",
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          data: [
-            {
-              email: email,
-              timestamp: formattedTimestamp
-            }
-          ]
-        })
-      }).catch(err => console.error("Error logging access:", err));
+      powerBIFrame.src =
+        POWER_BI_URL;
+
+      loginView.style.display =
+        "none";
+
+      dashboardView.style.display =
+        "flex";
+
+      startInactivityTracker();
     }
 
-    function showError(msg) {
-      const errorDiv = document.getElementById('error-msg');
-      errorDiv.innerText = msg;
-      errorDiv.style.display = "block";
+    /*
+    ============================================================
+    LOGIN BUTTON STATE
+    ============================================================
+    */
+
+    function setLoginLoading(isLoading) {
+      loginButton.disabled =
+        isLoading;
+
+      emailInput.disabled =
+        isLoading;
+
+      loginButton.textContent =
+        isLoading
+          ? "Verifying..."
+          : "Login";
     }
 
-    // --- 15-MINUTE INACTIVITY TRACKER ---
+    /*
+    ============================================================
+    ERROR MESSAGE
+    ============================================================
+    */
+
+    function showError(message) {
+      errorMessage.textContent =
+        message;
+
+      errorMessage.style.display =
+        "block";
+    }
+
+    function hideError() {
+      errorMessage.textContent =
+        "";
+
+      errorMessage.style.display =
+        "none";
+    }
+
+    /*
+    ============================================================
+    INACTIVITY LOGOUT
+    ============================================================
+    */
+
     function resetInactivityTimer() {
+      if (!isLoggedIn) {
+        return;
+      }
+
       clearTimeout(inactivityTimer);
-      inactivityTimer = setTimeout(() => {
-        alert("Logged out due to 15 minutes of inactivity.");
-        logout();
-      }, INACTIVITY_LIMIT_MS);
+
+      inactivityTimer =
+        setTimeout(() => {
+          alert(
+            "You have been logged out due to 15 minutes of inactivity."
+          );
+
+          logout();
+        }, INACTIVITY_LIMIT_MS);
     }
 
     function startInactivityTracker() {
-      const events = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'];
-      events.forEach(event => window.addEventListener(event, resetInactivityTimer, true));
+      if (!activityListenersAttached) {
+        const activityEvents = [
+          "mousemove",
+          "mousedown",
+          "keydown",
+          "scroll",
+          "touchstart"
+        ];
+
+        activityEvents.forEach(
+          (eventName) => {
+            window.addEventListener(
+              eventName,
+              resetInactivityTimer,
+              true
+            );
+          }
+        );
+
+        activityListenersAttached = true;
+      }
+
       resetInactivityTimer();
     }
 
+    /*
+    ============================================================
+    LOGOUT
+    ============================================================
+    */
+
     function logout() {
+      isLoggedIn = false;
+
       clearTimeout(inactivityTimer);
-      document.getElementById('powerbi-frame').src = "";
-      document.getElementById('email-input').value = "";
-      document.getElementById('dashboard-view').style.display = 'none';
-      document.getElementById('login-view').style.display = 'flex';
+      inactivityTimer = null;
+
+      powerBIFrame.src = "";
+
+      welcomeMessage.textContent =
+        "Welcome";
+
+      dashboardView.style.display =
+        "none";
+
+      loginView.style.display =
+        "flex";
+
+      emailInput.value = "";
+      emailInput.disabled = false;
+
+      hideError();
+      emailInput.focus();
     }
+
+    /*
+    ============================================================
+    EVENT LISTENERS
+    ============================================================
+    */
+
+    loginForm.addEventListener(
+      "submit",
+      handleLogin
+    );
+
+    logoutButton.addEventListener(
+      "click",
+      logout
+    );
   </script>
 </body>
 </html>
