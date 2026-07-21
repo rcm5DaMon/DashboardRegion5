@@ -199,7 +199,7 @@
       }
 
       .dashboard-selector-wrapper span {
-        display: none; /* Hide 'Dashboard:' label on small screens */
+        display: none;
       }
 
       .dashboard-selector {
@@ -251,9 +251,9 @@
 
       <div class="header-controls">
         <div class="dashboard-selector-wrapper">
-          <span>Dashboard:</span>
-          <select id="dashboard-select" class="dashboard-selector">
-            <!-- Options populated dynamically from DASHBOARDS array -->
+          <span>Select Page:</span>
+          <select id="page-select" class="dashboard-selector">
+            <!-- Options populated dynamically from REPORT_PAGES array -->
           </select>
         </div>
 
@@ -293,22 +293,18 @@
     // Google Form submission endpoint.
     const LOGIN_FORM_URL = "https://docs.google.com/forms/d/e/" + LOGIN_FORM_ID + "/formResponse";
 
-    // List of available Power BI reports. Add or modify reports here.
-    const DASHBOARDS = [
+    // Base Power BI URL (public embed link)
+    const POWER_BI_BASE_URL = "https://app.powerbi.com/view?r=eyJrIjoiNWQxMjI1NmYtYTUyMi00ZGVhLWFlNDItMDk2MjNhNGE5NDVmIiwidCI6IjU3OGRiYWRkLWMzMmMtNGY1YS04YzQ0LTMzZGE0NGM3MTIwOSIsImMiOjEwfQ%3D%3D";
+
+    // Updated with your specific section IDs
+    const REPORT_PAGES = [
       {
-        id: "sales-overview",
-        name: "Sales Overview",
-        url: "https://app.powerbi.com/view?r=eyJrIjoiNWQxMjI1NmYtYTUyMi00ZGVhLWFlNDItMDk2MjNhNGE5NDVmIiwidCI6IjU3OGRiYWRkLWMzMmMtNGY1YS04YzQ0LTMzZGE0NGM3MTIwOSIsImMiOjEwfQ%3D%3D"
+        name: "Sales Performance Dashboard",
+        sectionId: "bb254124c2e3ea4468dd"
       },
       {
-        id: "financial-report",
-        name: "Financial Summary",
-        url: "https://app.powerbi.com/view?r=YOUR_SECOND_REPORT_URL_HERE"
-      },
-      {
-        id: "operations",
-        name: "Operations & HR",
-        url: "https://app.powerbi.com/view?r=YOUR_THIRD_REPORT_URL_HERE"
+        name: "Stock Device Dashboard",
+        sectionId: "4257b26ca018b5b2da22"
       }
     ];
 
@@ -335,7 +331,7 @@
     const errorMessage = document.getElementById("error-message");
     const welcomeMessage = document.getElementById("welcome-message");
     const powerBIFrame = document.getElementById("powerbi-frame");
-    const dashboardSelect = document.getElementById("dashboard-select");
+    const pageSelect = document.getElementById("page-select");
 
     /*
     ============================================================
@@ -343,18 +339,24 @@
     ============================================================
     */
 
-    function initDashboardMenu() {
-      dashboardSelect.innerHTML = "";
-      DASHBOARDS.forEach((dashboard) => {
+    function initPageMenu() {
+      pageSelect.innerHTML = "";
+      REPORT_PAGES.forEach((page) => {
         const option = document.createElement("option");
-        option.value = dashboard.url;
-        option.textContent = dashboard.name;
-        dashboardSelect.appendChild(option);
+        
+        // Append section ID via pageName parameter
+        if (page.sectionId) {
+          option.value = POWER_BI_BASE_URL + "&pageName=" + encodeURIComponent(page.sectionId);
+        } else {
+          option.value = POWER_BI_BASE_URL;
+        }
+
+        option.textContent = page.name;
+        pageSelect.appendChild(option);
       });
     }
 
-    // Populate dropdown menu options on load
-    initDashboardMenu();
+    initPageMenu();
 
     /*
     ============================================================
@@ -524,9 +526,8 @@
 
       welcomeMessage.textContent = "Welcome, " + (user.userName || "User") + "!";
       
-      // Load the currently selected option from the dropdown (or first by default)
-      if (DASHBOARDS.length > 0) {
-        powerBIFrame.src = dashboardSelect.value || DASHBOARDS[0].url;
+      if (pageSelect.options.length > 0) {
+        powerBIFrame.src = pageSelect.value;
       }
 
       loginView.style.display = "none";
@@ -535,11 +536,11 @@
 
     /*
     ============================================================
-    SWITCH DASHBOARD
+    SWITCH REPORT PAGE
     ============================================================
     */
 
-    function handleDashboardChange(event) {
+    function handlePageChange(event) {
       const selectedUrl = event.target.value;
       if (selectedUrl) {
         powerBIFrame.src = selectedUrl;
@@ -591,9 +592,8 @@
       emailInput.value = "";
       emailInput.disabled = false;
 
-      // Reset dropdown selection to first item
-      if (dashboardSelect.options.length > 0) {
-        dashboardSelect.selectedIndex = 0;
+      if (pageSelect.options.length > 0) {
+        pageSelect.selectedIndex = 0;
       }
 
       hideError();
@@ -608,7 +608,7 @@
 
     loginForm.addEventListener("submit", handleLogin);
     logoutButton.addEventListener("click", logout);
-    dashboardSelect.addEventListener("change", handleDashboardChange);
+    pageSelect.addEventListener("change", handlePageChange);
   </script>
 </body>
 </html>
