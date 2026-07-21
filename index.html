@@ -10,97 +10,119 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     html,
     body {
       width: 100%;
       height: 100%;
-      background-color: #f4f6f8;
+      background-color: #121212;
+      color: #e0e0e0;
     }
 
-    /* Login page */
+    /* Login page - Industrial Minimalist */
     .login-container {
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       padding: 20px;
+      background: radial-gradient(circle at center, #1a1a1f 0%, #0d0d0f 100%);
     }
 
     .login-card {
       width: 100%;
       max-width: 400px;
       padding: 40px;
-      background-color: #ffffff;
-      border-radius: 10px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      background-color: #18181c;
+      border: 1px solid #2d2d35;
+      border-radius: 2px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
     }
 
     .login-card h2 {
-      margin-bottom: 10px;
-      color: #333333;
-      font-size: 24px;
+      margin-bottom: 8px;
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      border-bottom: 2px solid #ff6b00;
+      padding-bottom: 8px;
+      display: inline-block;
     }
 
     .login-description {
-      margin-bottom: 22px;
-      color: #666666;
-      font-size: 14px;
+      margin-top: 15px;
+      margin-bottom: 25px;
+      color: #9e9ea7;
+      font-size: 13px;
       line-height: 1.5;
     }
 
     .login-card input {
       width: 100%;
-      padding: 13px;
-      margin-bottom: 15px;
-      border: 1px solid #cccccc;
-      border-radius: 5px;
+      padding: 14px;
+      margin-bottom: 18px;
+      background-color: #0f0f12;
+      border: 1px solid #3a3a45;
+      border-radius: 2px;
+      color: #ffffff;
       font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .login-card input::placeholder {
+      color: #5a5a66;
     }
 
     .login-card input:focus {
-      border-color: #0078d4;
+      border-color: #ff6b00;
       outline: none;
-      box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.15);
+      box-shadow: 0 0 0 1px #ff6b00;
     }
 
     .login-card input:disabled {
-      background-color: #eeeeee;
+      background-color: #151518;
+      color: #5a5a66;
       cursor: not-allowed;
     }
 
     .login-card button {
       width: 100%;
-      padding: 13px;
-      color: #ffffff;
-      background-color: #0078d4;
+      padding: 14px;
+      color: #0d0d0f;
+      background-color: #ff6b00;
       border: none;
-      border-radius: 5px;
-      font-size: 14px;
-      font-weight: bold;
+      border-radius: 2px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       cursor: pointer;
+      transition: background-color 0.2s ease;
     }
 
     .login-card button:hover:not(:disabled) {
-      background-color: #106ebe;
+      background-color: #e05e00;
     }
 
     .login-card button:disabled {
-      background-color: #a6a6a6;
+      background-color: #3a3a45;
+      color: #7a7a85;
       cursor: not-allowed;
     }
 
     .error-message {
       display: none;
-      padding: 11px;
-      margin-bottom: 15px;
-      color: #b42318;
-      background-color: #fef3f2;
-      border: 1px solid #fecdca;
-      border-radius: 5px;
-      font-size: 14px;
+      padding: 12px;
+      margin-bottom: 18px;
+      color: #ff6b6b;
+      background-color: #2a1515;
+      border: 1px solid #5a2020;
+      border-radius: 2px;
+      font-size: 13px;
       line-height: 1.4;
     }
 
@@ -112,10 +134,11 @@
     }
 
     .dashboard-header {
-      min-height: 60px;
-      padding: 12px 20px;
+      min-height: 56px;
+      padding: 10px 24px;
       color: #ffffff;
-      background-color: #0078d4;
+      background-color: #18181c;
+      border-bottom: 1px solid #2d2d35;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -125,69 +148,78 @@
 
     .dashboard-header h3 {
       overflow: hidden;
-      font-size: 18px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       text-overflow: ellipsis;
       white-space: nowrap;
+      color: #e0e0e0;
     }
 
     .header-controls {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
     }
 
     .dashboard-selector-wrapper {
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: bold;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #8e8e99;
     }
 
     .dashboard-selector {
       padding: 8px 12px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
-      color: #333333;
-      background-color: #ffffff;
-      border: 1px solid #cccccc;
-      border-radius: 5px;
+      color: #ffffff;
+      background-color: #0f0f12;
+      border: 1px solid #3a3a45;
+      border-radius: 2px;
       outline: none;
       cursor: pointer;
     }
 
     .dashboard-selector:focus {
-      border-color: #004578;
-      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+      border-color: #ff6b00;
     }
 
     .dashboard-header button {
       flex-shrink: 0;
       padding: 8px 16px;
-      color: #0078d4;
-      background-color: #ffffff;
-      border: none;
-      border-radius: 5px;
-      font-size: 14px;
-      font-weight: bold;
+      color: #ffffff;
+      background-color: #2a2a32;
+      border: 1px solid #3a3a45;
+      border-radius: 2px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       cursor: pointer;
+      transition: all 0.2s ease;
     }
 
     .dashboard-header button:hover {
-      background-color: #f2f2f2;
+      background-color: #3a3a45;
+      border-color: #5a5a66;
     }
 
     #powerbi-frame {
       width: 100%;
-      height: calc(100vh - 60px);
+      height: calc(100vh - 56px);
       border: none;
-      background-color: #ffffff;
+      background-color: #121212;
     }
 
     @media (max-width: 600px) {
       .login-card {
-        padding: 28px 22px;
+        padding: 30px 20px;
       }
 
       .dashboard-header {
@@ -195,7 +227,7 @@
       }
 
       .dashboard-header h3 {
-        font-size: 15px;
+        font-size: 13px;
       }
 
       .dashboard-selector-wrapper span {
@@ -204,12 +236,12 @@
 
       .dashboard-selector {
         padding: 6px 10px;
-        font-size: 13px;
+        font-size: 12px;
       }
 
       .dashboard-header button {
         padding: 6px 10px;
-        font-size: 13px;
+        font-size: 11px;
       }
     }
   </style>
@@ -223,7 +255,7 @@
       <h2>Portal Access</h2>
 
       <p class="login-description">
-        Enter your registered email address to access the Power BI dashboard.
+        Enter your registered email address to access operational analytics.
       </p>
 
       <div id="error-message" class="error-message"></div>
@@ -232,13 +264,13 @@
         <input
           type="email"
           id="email-input"
-          placeholder="Enter your email address"
+          placeholder="Enter user email address"
           autocomplete="email"
           required
         >
 
         <button type="submit" id="login-button">
-          Login
+          Authenticate
         </button>
       </form>
     </div>
@@ -247,18 +279,18 @@
   <!-- Dashboard view -->
   <div id="dashboard-view">
     <header class="dashboard-header">
-      <h3 id="welcome-message">Welcome</h3>
+      <h3 id="welcome-message">System Active</h3>
 
       <div class="header-controls">
         <div class="dashboard-selector-wrapper">
-          <span>Select Page:</span>
+          <span>View Mode:</span>
           <select id="page-select" class="dashboard-selector">
             <!-- Options populated dynamically from REPORT_PAGES array -->
           </select>
         </div>
 
         <button type="button" id="logout-button">
-          Logout
+          Disconnect
         </button>
       </div>
     </header>
@@ -296,14 +328,14 @@
     // Base Power BI URL (public embed link)
     const POWER_BI_BASE_URL = "https://app.powerbi.com/view?r=eyJrIjoiNWQxMjI1NmYtYTUyMi00ZGVhLWFlNDItMDk2MjNhNGE5NDVmIiwidCI6IjU3OGRiYWRkLWMzMmMtNGY1YS04YzQ0LTMzZGE0NGM3MTIwOSIsImMiOjEwfQ%3D%3D";
 
-    // Updated with your specific section IDs
+    // Section IDs mapped to high-contrast menu items
     const REPORT_PAGES = [
       {
-        name: "Sales Performance Dashboard",
+        name: "Sales Performance",
         sectionId: "bb254124c2e3ea4468dd"
       },
       {
-        name: "Stock Device Dashboard",
+        name: "Stock Devices",
         sectionId: "4257b26ca018b5b2da22"
       }
     ];
@@ -344,7 +376,6 @@
       REPORT_PAGES.forEach((page) => {
         const option = document.createElement("option");
         
-        // Append section ID via pageName parameter
         if (page.sectionId) {
           option.value = POWER_BI_BASE_URL + "&pageName=" + encodeURIComponent(page.sectionId);
         } else {
@@ -524,7 +555,7 @@
     function openDashboard(user) {
       isLoggedIn = true;
 
-      welcomeMessage.textContent = "Welcome, " + (user.userName || "User") + "!";
+      welcomeMessage.textContent = "Operator: " + (user.userName || "User");
       
       if (pageSelect.options.length > 0) {
         powerBIFrame.src = pageSelect.value;
@@ -556,7 +587,7 @@
     function setLoginLoading(isLoading) {
       loginButton.disabled = isLoading;
       emailInput.disabled = isLoading;
-      loginButton.textContent = isLoading ? "Verifying..." : "Login";
+      loginButton.textContent = isLoading ? "Verifying..." : "Authenticate";
     }
 
     /*
@@ -584,7 +615,7 @@
     function logout() {
       isLoggedIn = false;
       powerBIFrame.src = "";
-      welcomeMessage.textContent = "Welcome";
+      welcomeMessage.textContent = "System Active";
 
       dashboardView.style.display = "none";
       loginView.style.display = "flex";
