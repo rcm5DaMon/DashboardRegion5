@@ -160,7 +160,7 @@
     .header-controls {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
     }
 
     .dashboard-selector-wrapper {
@@ -190,7 +190,8 @@
       border-color: #ff6b00;
     }
 
-    .dashboard-header button {
+    .dashboard-header button,
+    .dashboard-header .btn-secondary {
       flex-shrink: 0;
       padding: 8px 16px;
       color: #ffffff;
@@ -202,12 +203,28 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       transition: all 0.2s ease;
     }
 
-    .dashboard-header button:hover {
+    .dashboard-header button:hover,
+    .dashboard-header .btn-secondary:hover {
       background-color: #3a3a45;
       border-color: #5a5a66;
+    }
+
+    /* Style specifically for the report button */
+    .btn-report {
+      border-color: #ff6b00;
+      color: #ff6b00;
+    }
+
+    .btn-report:hover {
+      background-color: #ff6b00;
+      color: #0d0d0f;
     }
 
     #powerbi-frame {
@@ -239,7 +256,8 @@
         font-size: 12px;
       }
 
-      .dashboard-header button {
+      .dashboard-header button,
+      .dashboard-header .btn-secondary {
         padding: 6px 10px;
         font-size: 11px;
       }
@@ -288,6 +306,15 @@
             <!-- Options populated dynamically from REPORT_PAGES array -->
           </select>
         </div>
+
+        <a 
+          href="https://docs.google.com/forms/d/e/1FAIpQLSe7GOm2OM1Iwt93aCPONnQdoF_UAzNWbDi9mikQSoBEt-HFlg/viewform?usp=publish-editor" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="btn-secondary btn-report"
+        >
+          Report Issue
+        </a>
 
         <button type="button" id="logout-button">
           Disconnect
