@@ -1,705 +1,124 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f4f6ff">
-  <title>Power BI Portal</title>
-
-  <style>
-    :root {
-      --bg: #f5f7ff;
-      --surface: rgba(255, 255, 255, 0.88);
-      --surface-solid: #ffffff;
-      --surface-soft: #f3f5fb;
-      --text: #16172b;
-      --muted: #747b97;
-      --border: rgba(110, 118, 155, 0.18);
-      --primary: #5b5cf6;
-      --primary-dark: #4849d9;
-      --cyan: #25c5df;
-      --pink: #ff8ec7;
-      --success: #2abf88;
-      --danger: #de5b6d;
-      --shadow: 0 26px 70px rgba(42, 52, 97, 0.16);
-      --shadow-soft: 0 14px 34px rgba(42, 52, 97, 0.10);
-      --radius-lg: 24px;
-      --radius-md: 16px;
-      --radius-sm: 12px;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html,
-    body {
-      width: 100%;
-      min-height: 100%;
-    }
-
-    body {
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-      background: var(--bg);
-    }
-
-    button,
-    input,
-    select {
-      font: inherit;
-    }
-
-    button,
-    a,
-    select {
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .app-shell {
-      min-height: 100vh;
-      position: relative;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 15% 11%, rgba(99, 102, 241, 0.43), transparent 26%),
-        radial-gradient(circle at 18% 82%, rgba(255, 142, 199, 0.32), transparent 25%),
-        radial-gradient(circle at 86% 86%, rgba(37, 197, 223, 0.42), transparent 28%),
-        linear-gradient(140deg, #f8f9ff 0%, #f1f4fc 48%, #f7fbff 100%);
-    }
-
-    .app-shell::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-image: radial-gradient(rgba(91, 92, 246, 0.09) 0.7px, transparent 0.7px);
-      background-size: 22px 22px;
-      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.28), transparent 70%);
-      pointer-events: none;
-    }
-
-    .login-container {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 28px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .login-card {
-      width: min(100%, 430px);
-      padding: 42px;
-      background: var(--surface);
-      border: 1px solid rgba(255, 255, 255, 0.78);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      animation: cardIn 0.6s ease both;
-    }
-
-    @keyframes cardIn {
-      from { opacity: 0; transform: translateY(18px) scale(0.985); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .brand-mark {
-      width: 42px;
-      height: 42px;
-      display: grid;
-      place-items: center;
-      margin-bottom: 24px;
-      border-radius: 13px;
-      color: #ffffff;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--cyan) 100%);
-      box-shadow: 0 10px 24px rgba(91, 92, 246, 0.26);
-    }
-
-    .brand-mark svg {
-      width: 23px;
-      height: 23px;
-    }
-
-    .login-card h1 {
-      font-size: clamp(1.75rem, 3vw, 2.15rem);
-      line-height: 1.08;
-      letter-spacing: -0.04em;
-      margin-bottom: 10px;
-    }
-
-    .login-description {
-      max-width: 330px;
-      margin-bottom: 28px;
-      color: var(--muted);
-      font-size: 0.95rem;
-      line-height: 1.65;
-    }
-
-    .field-group {
-      margin-bottom: 20px;
-    }
-
-    .field-label {
-      display: block;
-      margin-bottom: 8px;
-      color: #676e8c;
-      font-size: 0.76rem;
-      font-weight: 800;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .input-wrap {
-      position: relative;
-    }
-
-    .input-wrap svg {
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      width: 19px;
-      height: 19px;
-      color: #a4aac0;
-      transform: translateY(-50%);
-      pointer-events: none;
-    }
-
-    .login-card input {
-      width: 100%;
-      height: 50px;
-      padding: 0 16px 0 46px;
-      color: var(--text);
-      background: rgba(242, 244, 252, 0.94);
-      border: 1px solid #e2e5f0;
-      border-radius: var(--radius-sm);
-      outline: none;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-    }
-
-    .login-card input::placeholder {
-      color: #a5abc2;
-    }
-
-    .login-card input:focus {
-      background: #ffffff;
-      border-color: rgba(91, 92, 246, 0.58);
-      box-shadow: 0 0 0 4px rgba(91, 92, 246, 0.10);
-    }
-
-    .login-card input:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-    }
-
-    .primary-button {
-      width: 100%;
-      height: 50px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      color: #ffffff;
-      background: linear-gradient(100deg, var(--primary) 0%, #4c73ef 43%, var(--cyan) 100%);
-      border: 0;
-      border-radius: var(--radius-sm);
-      box-shadow: 0 13px 26px rgba(78, 94, 234, 0.25);
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-    }
-
-    .primary-button:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 17px 32px rgba(78, 94, 234, 0.31);
-      filter: saturate(1.07);
-    }
-
-    .primary-button:active:not(:disabled) {
-      transform: translateY(0);
-    }
-
-    .primary-button:disabled {
-      opacity: 0.68;
-      cursor: not-allowed;
-    }
-
-    .error-message {
-      display: none;
-      margin-bottom: 18px;
-      padding: 12px 14px;
-      color: #a03e4c;
-      background: #fff2f4;
-      border: 1px solid #ffd6dc;
-      border-radius: 11px;
-      font-size: 0.86rem;
-      line-height: 1.5;
-    }
-
-    .login-footer {
-      margin-top: 18px;
-      color: #979db3;
-      font-size: 0.76rem;
-      text-align: center;
-    }
-
-    #dashboard-view {
-      display: none;
-      min-height: 100vh;
-      flex-direction: column;
-      position: relative;
-      z-index: 1;
-    }
-
-    .dashboard-header {
-      min-height: 76px;
-      margin: 18px 18px 0;
-      padding: 13px 16px 13px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      background: rgba(255, 255, 255, 0.84);
-      border: 1px solid rgba(255, 255, 255, 0.88);
-      border-radius: 18px;
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-    }
-
-    .header-brand {
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .header-brand .brand-mark {
-      width: 38px;
-      height: 38px;
-      margin: 0;
-      flex: 0 0 auto;
-      border-radius: 12px;
-    }
-
-    .header-copy {
-      min-width: 0;
-    }
-
-    .header-eyebrow {
-      margin-bottom: 2px;
-      color: var(--muted);
-      font-size: 0.7rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .dashboard-header h3 {
-      overflow: hidden;
-      color: var(--text);
-      font-size: 1rem;
-      font-weight: 800;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .header-controls {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .dashboard-selector-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      padding: 6px 8px 6px 12px;
-      background: var(--surface-soft);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-    }
-
-    .dashboard-selector-wrapper span {
-      color: var(--muted);
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-    }
-
-    .dashboard-selector {
-      max-width: 250px;
-      padding: 8px 34px 8px 10px;
-      color: var(--text);
-      background: #ffffff;
-      border: 1px solid #e1e4ef;
-      border-radius: 9px;
-      outline: none;
-      font-size: 0.85rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .dashboard-selector:focus {
-      border-color: rgba(91, 92, 246, 0.52);
-      box-shadow: 0 0 0 3px rgba(91, 92, 246, 0.09);
-    }
-
-    .header-button {
-      min-height: 42px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 0 15px;
-      color: #59617e;
-      background: #ffffff;
-      border: 1px solid #e0e3ee;
-      border-radius: 11px;
-      font-size: 0.8rem;
-      font-weight: 800;
-      text-decoration: none;
-      cursor: pointer;
-      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .header-button svg {
-      width: 17px;
-      height: 17px;
-    }
-
-    .header-button:hover {
-      transform: translateY(-1px);
-      border-color: #cfd4e4;
-      box-shadow: 0 8px 18px rgba(59, 67, 105, 0.09);
-    }
-
-    .btn-report {
-      color: #5558db;
-      background: #f2f1ff;
-      border-color: #dddcff;
-    }
-
-    .btn-logout {
-      color: #b04e5f;
-      background: #fff4f5;
-      border-color: #ffdfe3;
-    }
-
-    .dashboard-frame-shell {
-      flex: 1;
-      min-height: 0;
-      margin: 14px 18px 18px;
-      overflow: auto;
-      background: rgba(255, 255, 255, 0.82);
-      border: 1px solid rgba(255, 255, 255, 0.92);
-      border-radius: 20px;
-      box-shadow: var(--shadow-soft);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
-
-    #powerbi-frame {
-      width: 100%;
-      height: 100%;
-      min-height: calc(100vh - 126px);
-      display: block;
-      border: none;
-      background: #ffffff;
-      zoom: 160%;
-      -moz-transform: scale(1.6);
-      -moz-transform-origin: 0 0;
-    }
-
-    @media (max-width: 860px) {
-      .dashboard-header {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .header-controls {
-        width: 100%;
-        justify-content: flex-start;
-      }
-
-      .dashboard-selector-wrapper {
-        flex: 1 1 260px;
-      }
-
-      .dashboard-selector {
-        width: 100%;
-        max-width: none;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .login-container {
-        padding: 18px;
-      }
-
-      .login-card {
-        padding: 30px 22px;
-        border-radius: 20px;
-      }
-
-      .dashboard-header {
-        margin: 10px 10px 0;
-        padding: 14px;
-        border-radius: 16px;
-      }
-
-      .header-controls {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .dashboard-selector-wrapper {
-        grid-column: 1 / -1;
-        width: 100%;
-      }
-
-      .header-button {
-        width: 100%;
-      }
-
-      .dashboard-frame-shell {
-        margin: 10px;
-        border-radius: 16px;
-      }
-
-      #powerbi-frame {
-        min-height: calc(100vh - 245px);
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <main class="app-shell">
-    <section id="login-view" class="login-container">
-      <div class="login-card">
-        <div class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M5 17V11M10 17V7M15 17v-4M20 17V9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </div>
-
-        <h1>Welcome back</h1>
-        <p class="login-description">
-          Enter your registered email address to access operational analytics.
-        </p>
-
-        <div id="error-message" class="error-message" role="alert"></div>
-
-        <form id="login-form" novalidate>
-          <div class="field-group">
-            <label class="field-label" for="email-input">Email address</label>
-            <div class="input-wrap">
-              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M4 6.5h16v11H4z" stroke="currentColor" stroke-width="1.8" rx="2"/>
-                <path d="m5 8 7 5 7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <input
-                type="email"
-                id="email-input"
-                placeholder="you@company.com"
-                autocomplete="email"
-                required
-              >
-            </div>
-          </div>
-
-          <button class="primary-button" type="submit" id="login-button">
-            <span>Sign in</span>
-          </button>
-        </form>
-
-        <p class="login-footer">Secure access for authorised users only</p>
-      </div>
-    </section>
-
-    <section id="dashboard-view">
-      <header class="dashboard-header">
-        <div class="header-brand">
-          <div class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none">
-              <path d="M5 17V11M10 17V7M15 17v-4M20 17V9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </div>
-
-          <div class="header-copy">
-            <div class="header-eyebrow">Power BI Portal</div>
-            <h3 id="welcome-message">System active</h3>
-          </div>
-        </div>
-
-        <div class="header-controls">
-          <div class="dashboard-selector-wrapper">
-            <span>Dashboard</span>
-            <select id="page-select" class="dashboard-selector" aria-label="Select dashboard page"></select>
-          </div>
-
-          <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSe7GOm2OM1Iwt93aCPONnQdoF_UAzNWbDi9mikQSoBEt-HFlg/viewform?usp=publish-editor"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="header-button btn-report"
-          >
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 8v5M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M10.3 4.4 3.8 16a2 2 0 0 0 1.75 3h12.9a2 2 0 0 0 1.75-3L13.7 4.4a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-            </svg>
-            Report issue
-          </a>
-
-          <button class="header-button btn-logout" type="button" id="logout-button">
-            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M10 6H6.8A1.8 1.8 0 0 0 5 7.8v8.4A1.8 1.8 0 0 0 6.8 18H10M14 8l4 4-4 4M9 12h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            Sign out
-          </button>
-        </div>
-      </header>
-
-      <div class="dashboard-frame-shell">
-        <iframe
-          id="powerbi-frame"
-          src=""
-          title="Power BI Dashboard"
-          allowfullscreen
-        ></iframe>
-      </div>
-    </section>
-  </main>
-
-  <script>
-    const GOOGLE_SHEET_ID = "1TcVbH-ccKUS1AC-oHEIqCAj4IAyS2DmQgywFMqD85HQ";
-    const GOOGLE_SHEET_NAME = "Users";
-    const LOGIN_FORM_ID = "1FAIpQLSc8a96-q6g-pNqEXIBmLK7qrxHe5OSKCRkS3w8GHlqs1flTPQ";
-    const LOGIN_EMAIL_ENTRY_ID = "entry.804019142";
-    const LOGIN_FORM_URL = "https://docs.google.com/forms/d/e/" + LOGIN_FORM_ID + "/formResponse";
-
-    // Base URLs
-    const POWER_BI_BASE_URL = "https://app.powerbi.com/view?r=eyJrIjoiNWQxMjI1NmYtYTUyMi00ZGVhLWFlNDItMDk2MjNhNGE5NDVmIiwidCI6IjU3OGRiYWRkLWMzMmMtNGY1YS04YzQ0LTMzZGE0NGM3MTIwOSIsImMiOjEwfQ%3D%3D";
-    const POWER_BI_BASE_URL2 = "https://app.powerbi.com/view?r=eyJrIjoiYzg2M2EzYjQtNjA4NS00NTU3LTg5MjktZWMyODg4MGZhYTQ3IiwidCI6IjU3OGRiYWRkLWMzMmMtNGY1YS04YzQ0LTMzZGE0NGM3MTIwOSIsImMiOjEwfQ%3D%3D";
-
-    // Dashboard page mapping with report assignments
-    const REPORT_PAGES = [
-      { name: "Sales Performance", sectionId: "bb254124c2e3ea4468dd", baseUrl: POWER_BI_BASE_URL },
-      { name: "Stock Devices", sectionId: "4257b26ca018b5b2da22", baseUrl: POWER_BI_BASE_URL },
-      { name: "Stock Accessories", sectionId: "f859f15a2c4020eb0103", baseUrl: POWER_BI_BASE_URL },
-      { name: "Stock Laptop", sectionId: "7c7a87475b7e273d59e6", baseUrl: POWER_BI_BASE_URL },
-      { name: "Stock CE", sectionId: "1b6d3f7dc80e90d77b8c", baseUrl: POWER_BI_BASE_URL },
-      { name: "Stock Aging", sectionId: "90c5af6e23ed063bc92c", baseUrl: POWER_BI_BASE_URL },
-      { name: "Festival Belanja Erafone", sectionId: "f9d2fcc9ec3193ff8959", baseUrl: POWER_BI_BASE_URL2 }
-    ];
-
-    let isLoggedIn = false;
-
-    const loginView = document.getElementById("login-view");
-    const dashboardView = document.getElementById("dashboard-view");
-    const loginForm = document.getElementById("login-form");
-    const emailInput = document.getElementById("email-input");
-    const loginButton = document.getElementById("login-button");
-    const logoutButton = document.getElementById("logout-button");
-    const errorMessage = document.getElementById("error-message");
-    const welcomeMessage = document.getElementById("welcome-message");
-    const powerBIFrame = document.getElementById("powerbi-frame");
-    const pageSelect = document.getElementById("page-select");
-
-    function initPageMenu() {
-      pageSelect.innerHTML = "";
-
-      REPORT_PAGES.forEach((page) => {
-        const option = document.createElement("option");
-        const base = page.baseUrl || POWER_BI_BASE_URL;
-
-        option.value = page.sectionId
-          ? base + "&pageName=" + encodeURIComponent(page.sectionId)
-          : base;
-        option.textContent = page.name;
-        pageSelect.appendChild(option);
-      });
-    }
-
-    initPageMenu();
-
-    function getUsersFromGoogleSheet() {
-      return new Promise((resolve, reject) => {
-        const callbackName = "googleSheetCallback_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
-        const script = document.createElement("script");
-        const query = "select A, B where A is not null";
-
-        const requestTimeout = setTimeout(() => {
-          cleanup();
-          reject(new Error("The Google Sheet request timed out."));
-        }, 15000);
-
-        function cleanup() {
-          clearTimeout(requestTimeout);
-          if (script.parentNode) script.parentNode.removeChild(script);
-
-          try {
-            delete window[callbackName];
-          } catch (error) {
-            window[callbackName] = undefined;
-          }
+<script>
+  const GOOGLE_SHEET_ID = "1TcVbH-ccKUS1AC-oHEIqCAj4IAyS2DmQgywFMqD85HQ";
+  const GOOGLE_SHEET_NAME = "Users";
+  const LOGIN_FORM_ID = "1FAIpQLSc8a96-q6g-pNqEXIBmLK7qrxHe5OSKCRkS3w8GHlqs1flTPQ";
+  const LOGIN_EMAIL_ENTRY_ID = "entry.804019142";
+  const LOGIN_FORM_URL = "https://docs.google.com/forms/d/e/" + LOGIN_FORM_ID + "/formResponse";
+
+  const POWER_BI_BASE_URL = "https://app.powerbi.com/view?r=eyJrIjoiNWQxMjI1NmYtYTUyMi00ZGVhLWFlNDItMDk2MjNhNGE5NDVmIiwidCI6IjU3OGRiYWRkLWMzMmMtNGY1YS04YzQ0LTMzZGE0NGM3MTIwOSIsImMiOjEwfQ%3D%3D";
+  const POWER_BI_BASE_URL2 = "https://app.powerbi.com/view?r=eyJrIjoiYzg2M2EzYjQtNjA4NS00NTU3LTg5MjktZWMyODg4MGZhYTQ3IiwidCI6IjU3OGRiYWRkLWMzMmMtNGY1YS04YzQ0LTMzZGE0NGM3MTIwOSIsImMiOjEwfQ%3D%3D";
+
+  const REPORT_PAGES = [
+    { name: "Sales Performance", sectionId: "bb254124c2e3ea4468dd", baseUrl: POWER_BI_BASE_URL },
+    { name: "Stock Devices", sectionId: "4257b26ca018b5b2da22", baseUrl: POWER_BI_BASE_URL },
+    { name: "Stock Accessories", sectionId: "f859f15a2c4020eb0103", baseUrl: POWER_BI_BASE_URL },
+    { name: "Stock Laptop", sectionId: "7c7a87475b7e273d59e6", baseUrl: POWER_BI_BASE_URL },
+    { name: "Stock CE", sectionId: "1b6d3f7dc80e90d77b8c", baseUrl: POWER_BI_BASE_URL },
+    { name: "Stock Aging", sectionId: "90c5af6e23ed063bc92c", baseUrl: POWER_BI_BASE_URL },
+    { name: "Festival Belanja Erafone", sectionId: "f9d2fcc9ec3193ff8959", baseUrl: POWER_BI_BASE_URL2 }
+  ];
+
+  let isLoggedIn = false;
+
+  const loginView = document.getElementById("login-view");
+  const dashboardView = document.getElementById("dashboard-view");
+  const loginForm = document.getElementById("login-form");
+  const emailInput = document.getElementById("email-input");
+  const loginButton = document.getElementById("login-button");
+  const logoutButton = document.getElementById("logout-button");
+  const errorMessage = document.getElementById("error-message");
+  const welcomeMessage = document.getElementById("welcome-message");
+  const powerBIFrame = document.getElementById("powerbi-frame");
+  const pageSelect = document.getElementById("page-select");
+
+  function initPageMenu() {
+    pageSelect.innerHTML = "";
+
+    REPORT_PAGES.forEach((page) => {
+      const option = document.createElement("option");
+      const base = page.baseUrl || POWER_BI_BASE_URL;
+      option.value = page.sectionId
+        ? base + "&pageName=" + encodeURIComponent(page.sectionId)
+        : base;
+      option.textContent = page.name;
+      pageSelect.appendChild(option);
+    });
+  }
+
+  initPageMenu();
+
+  function getUsersFromGoogleSheet() {
+    return new Promise((resolve, reject) => {
+      const callbackName = "googleSheetCallback_" + Date.now() + "_" + Math.floor(Math.random() * 100000);
+      const script = document.createElement("script");
+      const query = "select A, B where A is not null";
+
+      const requestTimeout = setTimeout(() => {
+        cleanup();
+        reject(new Error("The Google Sheet request timed out."));
+      }, 15000);
+
+      function cleanup() {
+        clearTimeout(requestTimeout);
+        if (script.parentNode) script.parentNode.removeChild(script);
+        try {
+          delete window[callbackName];
+        } catch (error) {
+          window[callbackName] = undefined;
         }
+      }
 
-        window[callbackName] = function (response) {
-          try {
-            if (!response) throw new Error("Google Sheets returned an empty response.");
+      window[callbackName] = function (response) {
+        try {
+          if (!response) throw new Error("Google Sheets returned an empty response.");
 
-            if (response.status === "error") {
-              const details =
-                response.errors?.[0]?.detailed_message ||
-                response.errors?.[0]?.message ||
-                "Unknown Google Sheets error.";
-              throw new Error(details);
-            }
-
-            const rows = response.table?.rows || [];
-            const users = rows
-              .map((row) => ({
-                email: row.c?.[0]?.v ? String(row.c[0].v).trim().toLowerCase() : "",
-                userName: row.c?.[1]?.v ? String(row.c[1].v).trim() : "User"
-              }))
-              .filter((user) => user.email !== "");
-
-            cleanup();
-            resolve(users);
-          } catch (error) {
-            cleanup();
-            reject(error);
+          if (response.status === "error") {
+            const details =
+              response.errors?.[0]?.detailed_message ||
+              response.errors?.[0]?.message ||
+              "Unknown Google Sheets error.";
+            throw new Error(details);
           }
-        };
 
-        script.onerror = function () {
+          const rows = response.table?.rows || [];
+          const users = rows
+            .map((row) => ({
+              email: row.c?.[0]?.v ? String(row.c[0].v).trim().toLowerCase() : "",
+              userName: row.c?.[1]?.v ? String(row.c[1].v).trim() : "User"
+            }))
+            .filter((user) => user.email !== "");
+
           cleanup();
-          reject(new Error("Unable to load the Google Sheet."));
-        };
+          resolve(users);
+        } catch (error) {
+          cleanup();
+          reject(error);
+        }
+      };
 
-        const sheetURL =
-          "https://docs.google.com/spreadsheets/d/" +
-          encodeURIComponent(GOOGLE_SHEET_ID) +
-          "/gviz/tq" +
-          "?sheet=" + encodeURIComponent(GOOGLE_SHEET_NAME) +
-          "&headers=1" +
-          "&tq=" + encodeURIComponent(query) +
-          "&tqx=" + encodeURIComponent("out:json;responseHandler:" + callbackName) +
-          "&cacheBust=" + Date.now();
+      script.onerror = function () {
+        cleanup();
+        reject(new Error("Unable to load the Google Sheet."));
+      };
 
-        script.src = sheetURL;
-        script.async = true;
-        document.body.appendChild(script);
-      });
-    }
+      const sheetURL =
+        "https://docs.google.com/spreadsheets/d/" +
+        encodeURIComponent(GOOGLE_SHEET_ID) +
+        "/gviz/tq" +
+        "?sheet=" + encodeURIComponent(GOOGLE_SHEET_NAME) +
+        "&headers=1" +
+        "&tq=" + encodeURIComponent(query) +
+        "&tqx=" + encodeURIComponent("out:json;responseHandler:" + callbackName) +
+        "&cacheBust=" + Date.now();
 
-    function recordLogin(email) {
+      script.src = sheetURL;
+      script.async = true;
+      document.body.appendChild(script);
+    });
+  }
+
+  function recordLogin(email) {
+    try {
       const formData = new URLSearchParams();
       formData.append(LOGIN_EMAIL_ENTRY_ID, email);
 
@@ -710,97 +129,105 @@
         body: formData.toString(),
         keepalive: true
       }).catch((error) => console.error("Unable to record login:", error));
+    } catch (e) {
+      console.warn("Analytics recording skipped:", e);
     }
+  }
 
-    async function handleLogin(event) {
+  async function handleLogin(event) {
+    if (event) {
       event.preventDefault();
-      hideError();
+      event.stopPropagation();
+    }
+    hideError();
 
-      const inputEmail = emailInput.value.trim().toLowerCase();
+    const inputEmail = emailInput.value.trim().toLowerCase();
 
-      if (!inputEmail) {
-        showError("Please enter your email address.");
-        emailInput.focus();
-        return;
-      }
-
-      if (!emailInput.checkValidity()) {
-        showError("Please enter a valid email address.");
-        emailInput.focus();
-        return;
-      }
-
-      setLoginLoading(true);
-
-      try {
-        const users = await getUsersFromGoogleSheet();
-        const foundUser = users.find((user) => user.email === inputEmail);
-
-        if (!foundUser) {
-          showError("Access denied. This email address is not registered.");
-          return;
-        }
-
-        recordLogin(foundUser.email);
-        openDashboard(foundUser);
-      } catch (error) {
-        console.error("Login verification error:", error);
-        showError("Unable to verify your email. Check the Google Sheet sharing, publishing settings, and tab name.");
-      } finally {
-        setLoginLoading(false);
-      }
+    if (!inputEmail) {
+      showError("Please enter your email address.");
+      emailInput.focus();
+      return false;
     }
 
-    function openDashboard(user) {
+    setLoginLoading(true);
+
+    try {
+      const users = await getUsersFromGoogleSheet();
+      const foundUser = users.find((user) => user.email === inputEmail);
+
+      if (!foundUser) {
+        showError("Access denied. This email address is not registered.");
+        setLoginLoading(false);
+        return false;
+      }
+
+      recordLogin(foundUser.email);
+      openDashboard(foundUser);
+    } catch (error) {
+      console.error("Login verification error:", error);
+      showError("Unable to verify email. Check sheet connection or permissions.");
+      setLoginLoading(false);
+    }
+
+    return false;
+  }
+
+  function openDashboard(user) {
+    try {
       isLoggedIn = true;
       welcomeMessage.textContent = "Welcome, " + (user.userName || "User");
 
-      if (pageSelect.options.length > 0) {
-        powerBIFrame.src = pageSelect.value;
-      }
-
       loginView.style.display = "none";
       dashboardView.style.display = "flex";
+
+      if (pageSelect && pageSelect.options.length > 0) {
+        powerBIFrame.src = pageSelect.value;
+      }
+    } catch (err) {
+      console.error("Dashboard opening error:", err);
+    } finally {
+      setLoginLoading(false);
     }
+  }
 
-    function handlePageChange(event) {
-      if (event.target.value) powerBIFrame.src = event.target.value;
+  function handlePageChange(event) {
+    if (event.target.value) {
+      powerBIFrame.src = event.target.value;
     }
+  }
 
-    function setLoginLoading(isLoading) {
-      loginButton.disabled = isLoading;
-      emailInput.disabled = isLoading;
-      loginButton.querySelector("span").textContent = isLoading ? "Verifying..." : "Sign in";
-    }
+  function setLoginLoading(isLoading) {
+    loginButton.disabled = isLoading;
+    emailInput.disabled = isLoading;
+    loginButton.querySelector("span").textContent = isLoading ? "Verifying..." : "Sign in";
+  }
 
-    function showError(message) {
-      errorMessage.textContent = message;
-      errorMessage.style.display = "block";
-    }
+  function showError(message) {
+    errorMessage.textContent = message;
+    errorMessage.style.display = "block";
+  }
 
-    function hideError() {
-      errorMessage.textContent = "";
-      errorMessage.style.display = "none";
-    }
+  function hideError() {
+    errorMessage.textContent = "";
+    errorMessage.style.display = "none";
+  }
 
-    function logout() {
-      isLoggedIn = false;
-      powerBIFrame.src = "";
-      welcomeMessage.textContent = "System active";
-      dashboardView.style.display = "none";
-      loginView.style.display = "grid";
-      emailInput.value = "";
-      emailInput.disabled = false;
+  function logout() {
+    isLoggedIn = false;
+    powerBIFrame.src = "";
+    welcomeMessage.textContent = "System active";
+    dashboardView.style.display = "none";
+    loginView.style.display = "grid";
+    emailInput.value = "";
+    emailInput.disabled = false;
 
-      if (pageSelect.options.length > 0) pageSelect.selectedIndex = 0;
+    if (pageSelect.options.length > 0) pageSelect.selectedIndex = 0;
 
-      hideError();
-      emailInput.focus();
-    }
+    hideError();
+    emailInput.focus();
+  }
 
-    loginForm.addEventListener("submit", handleLogin);
-    logoutButton.addEventListener("click", logout);
-    pageSelect.addEventListener("change", handlePageChange);
-  </script>
-</body>
-</html>
+  loginForm.addEventListener("submit", handleLogin);
+  logoutButton.addEventListener("click", logout);
+  pageSelect.addEventListener("change", handlePageChange);
+</script>
