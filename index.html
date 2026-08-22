@@ -410,8 +410,6 @@
       display: block;
       border: none;
       background: #ffffff;
-      zoom: 160%;
-      -moz-transform: scale(1.6);
       -moz-transform-origin: 0 0;
     }
 
@@ -587,13 +585,13 @@
     const FESTIVAL_REPORT_URL = "https://app.powerbi.com/view?r=eyJrIjoiYzg2M2EzYjQtNjA4NS00NTU3LTg5MjktZWMyODg4MGZhYTQ3IiwidCI6IjU3OGRiYWRkLWMzMmMtNGY1YS04YzQ0LTMzZGE0NGM3MTIwOSIsImMiOjEwfQ%3D%3D";
 
     const REPORT_PAGES = [
-      { name: "Sales Performance", sectionId: "bb254124c2e3ea4468dd", baseUrl: DEFAULT_REPORT_URL },
-      { name: "Stock Devices", sectionId: "4257b26ca018b5b2da22", baseUrl: DEFAULT_REPORT_URL },
-      { name: "Stock Accessories", sectionId: "f859f15a2c4020eb0103", baseUrl: DEFAULT_REPORT_URL },
-      { name: "Stock Laptop", sectionId: "7c7a87475b7e273d59e6", baseUrl: DEFAULT_REPORT_URL },
-      { name: "Stock CE", sectionId: "1b6d3f7dc80e90d77b8c", baseUrl: DEFAULT_REPORT_URL },
-      { name: "Stock Aging", sectionId: "90c5af6e23ed063bc92c", baseUrl: DEFAULT_REPORT_URL },
-      { name: "Festival Belanja Erafone", sectionId: "f9d2fcc9ec3193ff8959", baseUrl: FESTIVAL_REPORT_URL },
+      { name: "Sales Performance", sectionId: "bb254124c2e3ea4468dd", baseUrl: DEFAULT_REPORT_URL, zoom: "160%" },
+      { name: "Stock Devices", sectionId: "4257b26ca018b5b2da22", baseUrl: DEFAULT_REPORT_URL, zoom: "160%" },
+      { name: "Stock Accessories", sectionId: "f859f15a2c4020eb0103", baseUrl: DEFAULT_REPORT_URL, zoom: "160%" },
+      { name: "Stock Laptop", sectionId: "7c7a87475b7e273d59e6", baseUrl: DEFAULT_REPORT_URL, zoom: "160%" },
+      { name: "Stock CE", sectionId: "1b6d3f7dc80e90d77b8c", baseUrl: DEFAULT_REPORT_URL, zoom: "160%" },
+      { name: "Stock Aging", sectionId: "90c5af6e23ed063bc92c", baseUrl: DEFAULT_REPORT_URL, zoom: "160%" },
+      { name: "Festival Belanja Erafone", sectionId: "f9d2fcc9ec3193ff8959", baseUrl: FESTIVAL_REPORT_URL, zoom: "100%" },
     ];
 
     let isLoggedIn = false;
@@ -609,6 +607,12 @@
     const powerBIFrame = document.getElementById("powerbi-frame");
     const pageSelect = document.getElementById("page-select");
 
+    function applyPageZoom(zoomLevel) {
+      powerBIFrame.style.zoom = zoomLevel;
+      const scaleValue = zoomLevel === "100%" ? "1" : "1.6";
+      powerBIFrame.style.MozTransform = `scale(${scaleValue})`;
+    }
+
     function initPageMenu() {
       pageSelect.innerHTML = "";
 
@@ -618,6 +622,7 @@
         option.value = page.sectionId
           ? url + "&pageName=" + encodeURIComponent(page.sectionId)
           : url;
+        option.dataset.zoom = page.zoom || "160%";
         option.textContent = page.name;
         pageSelect.appendChild(option);
       });
@@ -753,7 +758,9 @@
       welcomeMessage.textContent = "Welcome, " + (user.userName || "User");
 
       if (pageSelect.options.length > 0) {
-        powerBIFrame.src = pageSelect.value;
+        const selectedOption = pageSelect.options[pageSelect.selectedIndex];
+        powerBIFrame.src = selectedOption.value;
+        applyPageZoom(selectedOption.dataset.zoom || "160%");
       }
 
       loginView.style.display = "none";
@@ -761,7 +768,11 @@
     }
 
     function handlePageChange(event) {
-      if (event.target.value) powerBIFrame.src = event.target.value;
+      const selectedOption = event.target.options[event.target.selectedIndex];
+      if (selectedOption && selectedOption.value) {
+        powerBIFrame.src = selectedOption.value;
+        applyPageZoom(selectedOption.dataset.zoom || "160%");
+      }
     }
 
     function setLoginLoading(isLoading) {
