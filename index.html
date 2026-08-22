@@ -332,7 +332,7 @@
     }
 
     .dashboard-selector {
-      max-width: 220px;
+      max-width: 250px;
       padding: 8px 34px 8px 10px;
       color: var(--text);
       background: #ffffff;
@@ -390,12 +390,11 @@
       border-color: #ffdfe3;
     }
 
-    /* Option 2 Container Settings */
     .dashboard-frame-shell {
       flex: 1;
       min-height: 0;
       margin: 14px 18px 18px;
-      overflow: auto; /* Enables scrolling for the zoomed content */
+      overflow: auto;
       background: rgba(255, 255, 255, 0.82);
       border: 1px solid rgba(255, 255, 255, 0.92);
       border-radius: 20px;
@@ -404,7 +403,6 @@
       -webkit-backdrop-filter: blur(16px);
     }
 
-    /* Option 2 Iframe Scaling */
     #powerbi-frame {
       width: 100%;
       height: 100%;
@@ -584,15 +582,20 @@
     const LOGIN_FORM_ID = "1FAIpQLSc8a96-q6g-pNqEXIBmLK7qrxHe5OSKCRkS3w8GHlqs1flTPQ";
     const LOGIN_EMAIL_ENTRY_ID = "entry.804019142";
     const LOGIN_FORM_URL = "https://docs.google.com/forms/d/e/" + LOGIN_FORM_ID + "/formResponse";
-    const POWER_BI_BASE_URL = "https://app.powerbi.com/view?r=eyJrIjoiNWQxMjI1NmYtYTUyMi00ZGVhLWFlNDItMDk2MjNhNGE5NDVmIiwidCI6IjU3OGRiYWRkLWMzMmMtNGY1YS04YzQ0LTMzZGE0NGM3MTIwOSIsImMiOjEwfQ%3D%3D";
 
+    // Base URLs
+    const POWER_BI_BASE_URL = "https://app.powerbi.com/view?r=eyJrIjoiNWQxMjI1NmYtYTUyMi00ZGVhLWFlNDItMDk2MjNhNGE5NDVmIiwidCI6IjU3OGRiYWRkLWMzMmMtNGY1YS04YzQ0LTMzZGE0NGM3MTIwOSIsImMiOjEwfQ%3D%3D";
+    const POWER_BI_BASE_URL2 = "https://app.powerbi.com/view?r=eyJrIjoiYzg2M2EzYjQtNjA4NS00NTU3LTg5MjktZWMyODg4MGZhYTQ3IiwidCI6IjU3OGRiYWRkLWMzMmMtNGY1YS04YzQ0LTMzZGE0NGM3MTIwOSIsImMiOjEwfQ%3D%3D";
+
+    // Dashboard page mapping with report assignments
     const REPORT_PAGES = [
-      { name: "Sales Performance", sectionId: "bb254124c2e3ea4468dd" },
-      { name: "Stock Devices", sectionId: "4257b26ca018b5b2da22" },
-      { name: "Stock Accessories", sectionId: "f859f15a2c4020eb0103" },
-      { name: "Stock Laptop", sectionId: "7c7a87475b7e273d59e6" },
-      { name: "Stock CE", sectionId: "1b6d3f7dc80e90d77b8c" },
-      { name: "Stock Aging", sectionId: "90c5af6e23ed063bc92c" },
+      { name: "Sales Performance", sectionId: "bb254124c2e3ea4468dd", baseUrl: POWER_BI_BASE_URL },
+      { name: "Stock Devices", sectionId: "4257b26ca018b5b2da22", baseUrl: POWER_BI_BASE_URL },
+      { name: "Stock Accessories", sectionId: "f859f15a2c4020eb0103", baseUrl: POWER_BI_BASE_URL },
+      { name: "Stock Laptop", sectionId: "7c7a87475b7e273d59e6", baseUrl: POWER_BI_BASE_URL },
+      { name: "Stock CE", sectionId: "1b6d3f7dc80e90d77b8c", baseUrl: POWER_BI_BASE_URL },
+      { name: "Stock Aging", sectionId: "90c5af6e23ed063bc92c", baseUrl: POWER_BI_BASE_URL },
+      { name: "Festival Belanja Erafone", sectionId: "f9d2fcc9ec3193ff8959", baseUrl: POWER_BI_BASE_URL2 }
     ];
 
     let isLoggedIn = false;
@@ -613,9 +616,11 @@
 
       REPORT_PAGES.forEach((page) => {
         const option = document.createElement("option");
+        const base = page.baseUrl || POWER_BI_BASE_URL;
+
         option.value = page.sectionId
-          ? POWER_BI_BASE_URL + "&pageName=" + encodeURIComponent(page.sectionId)
-          : POWER_BI_BASE_URL;
+          ? base + "&pageName=" + encodeURIComponent(page.sectionId)
+          : base;
         option.textContent = page.name;
         pageSelect.appendChild(option);
       });
